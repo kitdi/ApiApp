@@ -44,6 +44,10 @@ class ApiFragment: Fragment() {
             onClickDeleteFavorite = { // Adapterの処理をそのままActivityに通知する
                 fragmentCallback?.onDeleteFavorite(it.id)
             }
+            // Itemをクリックしたとき
+            onClickItem = {
+                fragmentCallback?.onClickItem(it)
+            }
         }
         // RecyclerViewの初期化
         recyclerView.apply {

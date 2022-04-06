@@ -19,15 +19,8 @@ class FavoriteAdapter(private val context: Context): RecyclerView.Adapter<Recycl
     // お気に入り画面から削除するときのコールバック（ApiFragmentへ通知するメソッド)
     var onClickDeleteFavorite: ((FavoriteShop) -> Unit)? = null
 
-    // お気に入り画面用のViewHolderオブジェクトの生成
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType) {
-            // ViewTypeがVIEW_TYPE_EMPTY（つまり、お気に入り登録が0件）の場合
-            VIEW_TYPE_EMPTY -> EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_favorite_empty, parent, false))
-            // 上記以外（つまり、1件以上のお気に入りが登録されている場合
-            else -> FavoriteItemViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_favorite, parent, false))
-        }
-    }
+    // Itemを押したときのメソッド
+    var onClickItem: ((String) -> Unit)? = null
 
     // 更新用のメソッド
     fun refresh(list: List<FavoriteShop>) {
@@ -48,6 +41,16 @@ class FavoriteAdapter(private val context: Context): RecyclerView.Adapter<Recycl
         return if (items.isEmpty()) VIEW_TYPE_EMPTY else VIEW_TYPE_ITEM
     }
 
+    // お気に入り画面用のViewHolderオブジェクトの生成
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when(viewType) {
+            // ViewTypeがVIEW_TYPE_EMPTY（つまり、お気に入り登録が0件）の場合
+            VIEW_TYPE_EMPTY -> EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_favorite_empty, parent, false))
+            // 上記以外（つまり、1件以上のお気に入りが登録されている場合
+            else -> FavoriteItemViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_favorite, parent, false))
+        }
+    }
+
     // ViewHolderのバインド
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is FavoriteItemViewHolder) {
@@ -61,6 +64,9 @@ class FavoriteAdapter(private val context: Context): RecyclerView.Adapter<Recycl
         holder.apply {
             rootView.apply {
                 setBackgroundColor(ContextCompat.getColor(context, if (position % 2 == 0) android.R.color.white else android.R.color.darker_gray)) // 偶数番目と機数番目で背景色を変更させる
+                setOnClickListener {
+                    onClickItem?.invoke(data.url)
+                }
             }
             nameTextView.text = data.name
             Picasso.get().load(data.imageUrl).into(imageView) // Picassoというライブラリを使ってImageVIewに画像をはめ込む

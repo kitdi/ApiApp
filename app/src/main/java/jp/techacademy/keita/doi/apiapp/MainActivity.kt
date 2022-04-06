@@ -29,6 +29,10 @@ class MainActivity : AppCompatActivity(), FragmentCallback {
         }.attach()
     }
 
+    override fun onClickItem(url: String) {
+        WebViewActivity.start(this, url)
+    }
+
     override fun onAddFavorite(shop: Shop) { // Favoriteに追加するときのメソッド(Fragment -> Activity へ通知する)
         FavoriteShop.insert(FavoriteShop().apply {
             id = shop.id
