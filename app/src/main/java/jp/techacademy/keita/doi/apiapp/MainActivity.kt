@@ -2,6 +2,7 @@ package jp.techacademy.keita.doi.apiapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
@@ -29,8 +30,12 @@ class MainActivity : AppCompatActivity(), FragmentCallback {
         }.attach()
     }
 
-    override fun onClickItem(url: String) {
-        WebViewActivity.start(this, url)
+    override fun onClickItem(id: String, url: String) {
+//        WebViewActivity.start(this, url)
+        supportFragmentManager.beginTransaction()
+            .addToBackStack(null)
+            .replace(R.id.container, WebViewFragment.new(id, url))
+            .commit()
     }
 
     override fun onAddFavorite(shop: Shop) { // Favoriteに追加するときのメソッド(Fragment -> Activity へ通知する)

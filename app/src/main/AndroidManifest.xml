@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ApiApp">
         <activity
+            android:parentActivityName=".MainActivity"
             android:name=".WebViewActivity"
             android:exported="false" />
         <activity
