@@ -20,7 +20,9 @@ data class Shop(
     @SerializedName("logo_image")
     val logoImage: String,
     @SerializedName("name")
-    val name: String
+    val name: String,
+    @SerializedName("address")
+    val address: String
 )
 
 data class CouponUrls(

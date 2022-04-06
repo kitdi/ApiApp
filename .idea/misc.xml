@@ -7,7 +7,7 @@
         <entry key="app/src/main/res/layout/activity_web_view.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_api.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_favorite.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/recycler_favorite.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/recycler_favorite.xml" value="0.5" />
         <entry key="app/src/main/res/layout/recycler_favorite_empty.xml" value="0.1" />
       </map>
     </option>
