@@ -18,6 +18,8 @@ class WebViewFragment: Fragment() {
 
     private lateinit var backPressedCallback : OnBackPressedCallback
 
+    private lateinit var viewShop: Shop
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is FragmentCallback) {
@@ -38,30 +40,41 @@ class WebViewFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        viewShop = Shop(
+            id = arguments?.getString(KEY_ID, "").toString(),
+            couponUrls = CouponUrls(arguments?.getString(KEY_URL, "").toString(), arguments?.getString(KEY_URL, "").toString()),
+            name = arguments?.getString(KEY_NAME, "").toString(),
+            logoImage = arguments?.getString(KEY_LOGO_IMAGE, "").toString(),
+            address = ""
+        )
+
         // fragment_favorite.xmlが反映されたViewを作成して、returnします
         return inflater.inflate(R.layout.fragment_web_view, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // TODO: お気に入りマークの画像を変える
+
+        fab.setImageResource((if (isFavorite()) R.drawable.ic_star else R.drawable.ic_star_border))
+
+        // TODO: アイコンの画像を変えるタイミングを他のFragmentと合わせる
         fab.setOnClickListener {
-            arguments?.getString(KEY_ID)?.let {
-                val favoriteShop = FavoriteShop.findBy(it)
-                val isFavorite = favoriteShop != null
-                fab.setImageResource((if (isFavorite) R.drawable.ic_star else R.drawable.ic_star_border))
-                if (isFavorite) {
-                    fragmentCallback?.onDeleteFavorite(favoriteShop!!.id)
-                } else {
-                    R.drawable.ic_star_border
-                    // TODO: ShopをFragmentに渡す
-//                    fragmentCallback?.onAddFavorite(Shop())
-                }
+            if (isFavorite()) {
+                fab.setImageResource(R.drawable.ic_star_border)
+                fragmentCallback?.onDeleteFavorite(viewShop.id)
+            } else {
+                fab.setImageResource(R.drawable.ic_star_border)
+                fragmentCallback?.onAddFavorite(viewShop)
             }
         }
 
         // クーポンURLを開く
-        arguments?.getString(KEY_URL)?.let { webView.loadUrl(it) }
+        webView.loadUrl(viewShop.couponUrls.sp)
+    }
+
+    private fun isFavorite(): Boolean {
+        return FavoriteShop.findBy(viewShop.id) != null
     }
 
     override fun onDestroy() {
@@ -72,11 +85,15 @@ class WebViewFragment: Fragment() {
     companion object {
         private const val KEY_ID = "key_id"
         private const val KEY_URL = "key_url"
-        fun new(id: String, url: String): WebViewFragment =
+        private const val KEY_NAME = "key_name"
+        private const val KEY_LOGO_IMAGE = "key_logo_image"
+        fun new(id: String, url: String, name: String, logoImage: String): WebViewFragment =
             WebViewFragment().apply {
                 arguments = Bundle().apply {
                     putString(KEY_ID, id)
                     putString(KEY_URL, url)
+                    putString(KEY_NAME, name)
+                    putString(KEY_LOGO_IMAGE, logoImage)
                 }
             }
     }

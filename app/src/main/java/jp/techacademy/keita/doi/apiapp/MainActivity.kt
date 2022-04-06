@@ -30,11 +30,16 @@ class MainActivity : AppCompatActivity(), FragmentCallback {
         }.attach()
     }
 
-    override fun onClickItem(id: String, url: String) {
+    override fun onClickItem(shop: Shop) {
 //        WebViewActivity.start(this, url)
         supportFragmentManager.beginTransaction()
             .addToBackStack(null)
-            .replace(R.id.container, WebViewFragment.new(id, url))
+            .replace(R.id.container, WebViewFragment.new(
+                id = shop.id,
+                url = if (shop.couponUrls.sp.isNotEmpty()) shop.couponUrls.sp else shop.couponUrls.pc,
+                name = shop.name,
+                logoImage = shop.logoImage
+            ))
             .commit()
     }
 
@@ -45,6 +50,7 @@ class MainActivity : AppCompatActivity(), FragmentCallback {
             imageUrl = shop.logoImage
             url = if (shop.couponUrls.sp.isNotEmpty()) shop.couponUrls.sp else shop.couponUrls.pc
         })
+        (viewPagerAdapter.fragments[VIEW_PAGER_POSITION_API] as ApiFragment).updateView()
         (viewPagerAdapter.fragments[VIEW_PAGER_POSITION_FAVORITE] as FavoriteFragment).updateData()
     }
 
